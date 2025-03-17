@@ -410,4 +410,114 @@ public sealed class TextPromptTests
         // Then
         return Verifier.Verify(console.Output);
     }
+
+    [Fact]
+    [Expectation("History_None")]
+    public Task UpArrow_with_no_history_clears_prompt()
+    {
+        // Given
+        var console = new TestConsole();
+        console.Input.PushKey(ConsoleKey.UpArrow);
+        console.Input.PushTextWithEnter("Dragonfruit");
+
+        // When
+        console.Prompt(
+            new TextPrompt<string>("Favorite fruit?") { History = [] });
+
+        // Then
+        return Verifier.Verify(console.Output);
+    }
+
+    [Fact]
+    [Expectation("History_Apple")]
+    public Task UpArrow_with_one_history_retrieves_it()
+    {
+        // Given
+        var console = new TestConsole();
+        var history = new string[] { "Apple" };
+        console.Input.PushKey(ConsoleKey.UpArrow);
+        console.Input.PushKey(ConsoleKey.Enter);
+
+        // When
+        console.Prompt(
+            new TextPrompt<string>("Favorite fruit?") { History = history });
+
+        // Then
+        return Verifier.Verify(console.Output);
+    }
+
+    [Fact]
+    [Expectation("History_Banana")]
+    public Task UpArrow_with_two_history_retrieves_on_one_up()
+    {
+        // Given
+        var console = new TestConsole();
+        var history = new string[] { "Apple", "Banana" };
+        console.Input.PushKey(ConsoleKey.UpArrow);
+        console.Input.PushKey(ConsoleKey.Enter);
+
+        // When
+        console.Prompt(
+            new TextPrompt<string>("Favorite fruit?") { History = history });
+
+        // Then
+        return Verifier.Verify(console.Output);
+    }
+
+    [Fact]
+    [Expectation("History_Apple2")]
+    public Task UpArrow_with_two_history_retrieves_on_two_up()
+    {
+        // Given
+        var console = new TestConsole();
+        var history = new string[] { "Apple", "Banana" };
+        console.Input.PushKey(ConsoleKey.UpArrow);
+        console.Input.PushKey(ConsoleKey.UpArrow);
+        console.Input.PushKey(ConsoleKey.Enter);
+
+        // When
+        console.Prompt(
+            new TextPrompt<string>("Favorite fruit?") { History = history });
+
+        // Then
+        return Verifier.Verify(console.Output);
+    }
+
+    [Fact]
+    [Expectation("History_Banana2")]
+    public Task UpArrow_with_two_history_retrieves_on_one_up_one_down_one_up()
+    {
+        // Given
+        var console = new TestConsole();
+        var history = new string[] { "Apple", "Banana" };
+        console.Input.PushKey(ConsoleKey.UpArrow);
+        console.Input.PushKey(ConsoleKey.DownArrow);
+        console.Input.PushKey(ConsoleKey.UpArrow);
+        console.Input.PushKey(ConsoleKey.Enter);
+
+        // When
+        console.Prompt(
+            new TextPrompt<string>("Favorite fruit?") { History = history });
+
+        // Then
+        return Verifier.Verify(console.Output);
+    }
+
+    [Fact]
+    [Expectation("History_Tomato")]
+    public Task UpArrow_with_two_history_ignores_immediate_down()
+    {
+        // Given
+        var console = new TestConsole();
+        var history = new string[] { "Apple", "Banana" };
+        console.Input.PushKey(ConsoleKey.DownArrow);
+        console.Input.PushTextWithEnter("Tomato");
+
+        // When
+        console.Prompt(
+            new TextPrompt<string>("Favorite fruit?") { History = history });
+
+        // Then
+        return Verifier.Verify(console.Output);
+    }
 }

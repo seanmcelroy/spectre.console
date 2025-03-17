@@ -85,6 +85,11 @@ public sealed class TextPrompt<T> : IPrompt<T>, IHasCulture
     public Style? ChoicesStyle { get; set; }
 
     /// <summary>
+    /// Gets or sets the history to use for up/down arrow selection of previous entries.
+    /// </summary>
+    public IEnumerable<string>? History { get; set; }
+
+    /// <summary>
     /// Gets or sets the default value.
     /// </summary>
     internal DefaultPromptValue<T>? DefaultValue { get; set; }
@@ -130,7 +135,7 @@ public sealed class TextPrompt<T> : IPrompt<T>, IHasCulture
 
             while (true)
             {
-                var input = await console.ReadLine(promptStyle, IsSecret, Mask, choices, cancellationToken).ConfigureAwait(false);
+                var input = await console.ReadLine(promptStyle, IsSecret, Mask, choices, cancellationToken, History).ConfigureAwait(false);
 
                 // Nothing entered?
                 if (string.IsNullOrWhiteSpace(input))

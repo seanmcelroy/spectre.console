@@ -5,7 +5,7 @@ namespace Spectre.Console;
 /// </summary>
 public static partial class AnsiConsoleExtensions
 {
-    internal static async Task<string> ReadLine(this IAnsiConsole console, Style? style, bool secret, char? mask, IEnumerable<string>? items = null, CancellationToken cancellationToken = default)
+    internal static async Task<string> ReadLine(this IAnsiConsole console, Style? style, bool secret, char? mask, IEnumerable<string>? items = null, CancellationToken cancellationToken = default, IEnumerable<string>? history = null)
     {
         if (console is null)
         {
@@ -16,6 +16,7 @@ public static partial class AnsiConsoleExtensions
         var text = string.Empty;
 
         var autocomplete = new List<string>(items ?? Enumerable.Empty<string>());
+        var historyIndex = 0;
 
         while (true)
         {
@@ -66,6 +67,55 @@ public static partial class AnsiConsoleExtensions
                             console.Write("\b \b\b \b");
                         }
                     }
+                }
+
+                continue;
+            }
+
+            var historyCount = history?.Count() ?? 0;
+            if (key.Key == ConsoleKey.UpArrow && historyCount > 0)
+            {
+                console.Cursor.MoveLeft(text.Length);
+                console.Write(" ".Repeat(text.Length));
+                console.Cursor.MoveLeft(text.Length);
+                var prev = history!.Reverse().Skip(historyIndex).Take(1).FirstOrDefault();
+                if (prev != null)
+                {
+                    text = prev ?? string.Empty;
+                    console.Write(text);
+                }
+                else
+                {
+                    text = string.Empty;
+                }
+
+                historyIndex++;
+                if (historyIndex > historyCount)
+                {
+                    historyIndex = historyCount;
+                }
+
+                continue;
+            }
+
+            if (key.Key == ConsoleKey.DownArrow && historyCount > 0)
+            {
+                historyIndex--;
+                if (historyIndex <= 0)
+                {
+                    historyIndex = 0;
+                    console.Cursor.MoveLeft(text.Length);
+                    console.Write(" ".Repeat(text.Length));
+                    console.Cursor.MoveLeft(text.Length);
+                    text = string.Empty;
+                }
+                else
+                {
+                    console.Cursor.MoveLeft(text.Length);
+                    console.Write(" ".Repeat(text.Length));
+                    console.Cursor.MoveLeft(text.Length);
+                    text = history!.Reverse().Skip(historyIndex).Take(1).FirstOrDefault() ?? string.Empty;
+                    console.Write(text);
                 }
 
                 continue;
