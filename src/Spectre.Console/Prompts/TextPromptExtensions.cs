@@ -360,4 +360,28 @@ public static class TextPromptExtensions
         obj.ChoicesStyle = style;
         return obj;
     }
+
+    /// <summary>
+    /// Adds history to the prompt to allow arrow-key scrolling on input.
+    /// </summary>
+    /// <typeparam name="T">The prompt result type.</typeparam>
+    /// <param name="obj">The prompt.</param>
+    /// <param name="history">The history lines to add.  The last history string will be the first shown when the user arrows up at the prompt.</param>
+    /// <returns>The same instance so that multiple calls can be chained.</returns>
+    public static TextPrompt<T> AddHistory<T>(this TextPrompt<T> obj, IEnumerable<string> history)
+    {
+        if (obj is null)
+        {
+            throw new ArgumentNullException(nameof(obj));
+        }
+
+        if (history is null)
+        {
+            throw new ArgumentNullException(nameof(history));
+        }
+
+        obj.History.AddRange(history);
+
+        return obj;
+    }
 }

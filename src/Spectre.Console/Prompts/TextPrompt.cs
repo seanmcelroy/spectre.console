@@ -85,9 +85,9 @@ public sealed class TextPrompt<T> : IPrompt<T>, IHasCulture
     public Style? ChoicesStyle { get; set; }
 
     /// <summary>
-    /// Gets or sets the history to use for up/down arrow selection of previous entries.
+    /// Gets the history to use for up/down arrow selection of previous entries.
     /// </summary>
-    public IEnumerable<string>? History { get; set; }
+    public List<string> History { get; } = new List<string>();
 
     /// <summary>
     /// Gets or sets the default value.

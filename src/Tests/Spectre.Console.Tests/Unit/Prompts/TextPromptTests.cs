@@ -422,7 +422,7 @@ public sealed class TextPromptTests
 
         // When
         console.Prompt(
-            new TextPrompt<string>("Favorite fruit?") { History = [] });
+            new TextPrompt<string>("Favorite fruit?"));
 
         // Then
         return Verifier.Verify(console.Output);
@@ -440,7 +440,7 @@ public sealed class TextPromptTests
 
         // When
         console.Prompt(
-            new TextPrompt<string>("Favorite fruit?") { History = history });
+            new TextPrompt<string>("Favorite fruit?").AddHistory(history));
 
         // Then
         return Verifier.Verify(console.Output);
@@ -458,7 +458,7 @@ public sealed class TextPromptTests
 
         // When
         console.Prompt(
-            new TextPrompt<string>("Favorite fruit?") { History = history });
+            new TextPrompt<string>("Favorite fruit?").AddHistory(history));
 
         // Then
         return Verifier.Verify(console.Output);
@@ -477,7 +477,7 @@ public sealed class TextPromptTests
 
         // When
         console.Prompt(
-            new TextPrompt<string>("Favorite fruit?") { History = history });
+            new TextPrompt<string>("Favorite fruit?").AddHistory(history));
 
         // Then
         return Verifier.Verify(console.Output);
@@ -497,7 +497,7 @@ public sealed class TextPromptTests
 
         // When
         console.Prompt(
-            new TextPrompt<string>("Favorite fruit?") { History = history });
+            new TextPrompt<string>("Favorite fruit?").AddHistory(history));
 
         // Then
         return Verifier.Verify(console.Output);
@@ -515,7 +515,7 @@ public sealed class TextPromptTests
 
         // When
         console.Prompt(
-            new TextPrompt<string>("Favorite fruit?") { History = history });
+            new TextPrompt<string>("Favorite fruit?").AddHistory(history));
 
         // Then
         return Verifier.Verify(console.Output);
