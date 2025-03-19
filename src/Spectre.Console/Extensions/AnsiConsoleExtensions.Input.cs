@@ -16,7 +16,7 @@ public static partial class AnsiConsoleExtensions
         var text = string.Empty;
 
         var autocomplete = new List<string>(items ?? Enumerable.Empty<string>());
-        var historyIndex = 0;
+        var historyIndex = -1;
 
         while (true)
         {
@@ -78,6 +78,13 @@ public static partial class AnsiConsoleExtensions
                 console.Cursor.MoveLeft(text.Length);
                 console.Write(" ".Repeat(text.Length));
                 console.Cursor.MoveLeft(text.Length);
+
+                historyIndex++;
+                if (historyIndex > historyCount)
+                {
+                    historyIndex = historyCount;
+                }
+
                 var prev = history!.Reverse().Skip(historyIndex).Take(1).FirstOrDefault();
                 if (prev != null)
                 {
@@ -89,31 +96,24 @@ public static partial class AnsiConsoleExtensions
                     text = string.Empty;
                 }
 
-                historyIndex++;
-                if (historyIndex > historyCount)
-                {
-                    historyIndex = historyCount;
-                }
-
                 continue;
             }
 
-            if (key.Key == ConsoleKey.DownArrow && historyCount > 0)
+            if (key.Key == ConsoleKey.DownArrow && historyCount > 0 && historyIndex > -1)
             {
+                // Erase what is there
+                console.Cursor.MoveLeft(text.Length);
+                console.Write(" ".Repeat(text.Length));
+                console.Cursor.MoveLeft(text.Length);
+
                 historyIndex--;
-                if (historyIndex <= 0)
+
+                if (historyIndex == -1)
                 {
-                    historyIndex = 0;
-                    console.Cursor.MoveLeft(text.Length);
-                    console.Write(" ".Repeat(text.Length));
-                    console.Cursor.MoveLeft(text.Length);
                     text = string.Empty;
                 }
                 else
                 {
-                    console.Cursor.MoveLeft(text.Length);
-                    console.Write(" ".Repeat(text.Length));
-                    console.Cursor.MoveLeft(text.Length);
                     text = history!.Reverse().Skip(historyIndex).Take(1).FirstOrDefault() ?? string.Empty;
                     console.Write(text);
                 }
